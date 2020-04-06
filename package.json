@@ -1,0 +1,14 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cliTool.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "elm make  src/CLI.elm --output ex/main.js && cp src/cli.js ex/cli.js",
+    "cli": "node ex/cli.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
