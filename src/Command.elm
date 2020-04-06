@@ -1,10 +1,12 @@
 port module Command exposing
-    ( add
-    , displayRegister
+    ( displayRegister
     , echo
+    , f1
+    , f2
     , get
     , help
     , message
+    , op
     , put
     , rcl
     , sto
@@ -22,7 +24,7 @@ port put : String -> Cmd msg
 
 
 precision =
-    3
+    4
 
 
 getRegister : Model -> String -> Maybe Float
@@ -121,21 +123,58 @@ displayRegister model argList _ =
     model |> displayRegisterContents (String.toUpper reg) (getRegisterAsString model reg)
 
 
-add : Model -> ArgList -> ( Model, Cmd Msg )
-add model argList =
+f1 : Model -> (Float -> Float) -> ArgList -> ( Model, Cmd Msg )
+f1 model f argList =
+    case ArgList.getAsFloat 0 argList of
+        Nothing ->
+            model |> withCmd (put "argument is not a number")
+
+        Just a ->
+            let
+                value =
+                    f a
+
+                valueAsString =
+                    roundTo precision value |> String.fromFloat
+            in
+            setRegister "m" (Just value) model |> withCmd (put valueAsString)
+
+
+f2 : Model -> (Float -> Float -> Float) -> ArgList -> ( Model, Cmd Msg )
+f2 model f argList =
+    case ( ArgList.getAsFloat 0 argList, ArgList.getAsFloat 1 argList ) of
+        ( Nothing, _ ) ->
+            model |> withCmd (put "first argument is not a number")
+
+        ( _, Nothing ) ->
+            model |> withCmd (put "second argument is not a number")
+
+        ( Just a, Just b ) ->
+            let
+                value =
+                    f a b
+
+                valueAsString =
+                    roundTo precision value |> String.fromFloat
+            in
+            setRegister "m" (Just value) model |> withCmd (put valueAsString)
+
+
+op : Model -> (Float -> Float -> Float) -> ArgList -> ( Model, Cmd Msg )
+op model op_ argList =
     case ArgList.length argList of
         2 ->
-            add2 model argList
+            op2 model op_ argList
 
         1 ->
-            add1 model argList
+            op1 model op_ argList
 
         _ ->
             model |> withCmd (put "must give one or two arguments")
 
 
-add1 : Model -> ArgList -> ( Model, Cmd Msg )
-add1 model argList =
+op1 : Model -> (Float -> Float -> Float) -> ArgList -> ( Model, Cmd Msg )
+op1 model op_ argList =
     case ( ArgList.getAsFloat 0 argList, getRegister model "m" ) of
         ( Nothing, _ ) ->
             model |> withCmd (put "argument is not a number")
@@ -146,7 +185,7 @@ add1 model argList =
         ( Just a, Just b ) ->
             let
                 sum =
-                    a + b
+                    op_ b a
 
                 sumAsString =
                     roundTo precision sum |> String.fromFloat
@@ -154,8 +193,8 @@ add1 model argList =
             setRegister "m" (Just sum) model |> withCmd (put sumAsString)
 
 
-add2 : Model -> ArgList -> ( Model, Cmd Msg )
-add2 model argList =
+op2 : Model -> (Float -> Float -> Float) -> ArgList -> ( Model, Cmd Msg )
+op2 model op_ argList =
     case ( ArgList.getAsFloat 0 argList, ArgList.getAsFloat 1 argList ) of
         ( Nothing, _ ) ->
             model |> withCmd (put "first argument is not a number")
@@ -166,7 +205,7 @@ add2 model argList =
         ( Just a, Just b ) ->
             let
                 sum =
-                    a + b
+                    op_ b a
 
                 sumAsString =
                     roundTo precision sum |> String.fromFloat
@@ -226,14 +265,27 @@ helpText =
     """---------------------------------------------------------------------------------------
 Simple command line program: calculator
 ---------------------------------------------------------------------------------------
+Operations: add, mul, etc. as described in the command summary. Saying 'add 2 3'
+computes the sum and places the result in register.  If you subsequently say
+'add 4', this number will be added to the contents of register M.  The
+command `sub 1' will subtract 1 from register M.
+
 This calculator has registers A, B, C, D, E, F, and M, each of which can hold a
 floating point number.  Type 'r' to display register M, type 'r a' to
 display the contents of register a, etc.
 
 Command summary
 ---------------------------------------------------------------------------------------
+> add a b         -- compute a + b, store result in register M
+> mul a b         -- compute a * b, result to register M
+> sub a b         -- compute a - b, result to register M
+> div a b         -- compute a / b, result to register M
+> exp x           -- exponential of x
+> ln x            -- natural logarithm of x
+> pow a x         -- a^x
+> log a x         -- logarithm of x to base a
 > d               -- display contents of register M
-> d a             -- display contents of register As
+> d a             -- display contents of register A
 > rcl a           -- store contents of A in M
 > sto a           -- store contents of M in A
 > h               -- show help

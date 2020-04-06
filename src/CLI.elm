@@ -74,7 +74,28 @@ executeCommand : Model -> String -> ArgList -> String -> ( Model, Cmd Msg )
 executeCommand model cmd args input =
     case cmd of
         "add" ->
-            Command.add model args
+            Command.op model (+) args
+
+        "mul" ->
+            Command.op model (*) args
+
+        "sub" ->
+            Command.op model (-) args
+
+        "div" ->
+            Command.op model (/) args
+
+        "exp" ->
+            Command.f1 model (\x -> e ^ x) args
+
+        "ln" ->
+            Command.f1 model (logBase e) args
+
+        "pow" ->
+            Command.f2 model (\a b -> a ^ b) args
+
+        "log" ->
+            Command.f2 model logBase args
 
         "echo" ->
             Command.echo model args input
