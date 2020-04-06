@@ -3,6 +3,10 @@ module ArgList exposing (ArgList, get, getAsFloat, init, length)
 import List.Extra
 
 
+
+-- CONVENIENCE FUNCTIONS FOR EXRACTING ARGUMENTS
+
+
 type ArgList
     = ArgList
         { length : Int

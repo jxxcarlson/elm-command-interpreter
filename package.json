@@ -5,8 +5,8 @@
   "main": "cliTool.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "elm make  src/CLI.elm --output ex/main.js && cp src/cli.js ex/cli.js",
-    "cli": "node ex/cli.js"
+    "build": "elm make  src/Main.elm --output ex/main.js && cp src/cli.js ex/cli.js",
+    "start": "node ex/cli.js"
   },
   "keywords": [],
   "author": "",

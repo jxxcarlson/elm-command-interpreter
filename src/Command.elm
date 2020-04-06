@@ -17,14 +17,35 @@ import Cmd.Extra exposing (withCmd, withNoCmd)
 import Model exposing (Model, Msg(..))
 
 
+
+-- PORTS
+
+
 port get : (String -> msg) -> Sub msg
 
 
 port put : String -> Cmd msg
 
 
+
+-- FLOATING POINT STUFF
+
+
 precision =
     4
+
+
+roundTo : Int -> Float -> Float
+roundTo d x =
+    let
+        factor =
+            10.0 ^ toFloat d
+    in
+    x * factor |> round |> (\u -> toFloat u / factor)
+
+
+
+-- FUNCTIONS TO WORK WITH REGISTERS
 
 
 getRegister : Model -> String -> Maybe Float
@@ -53,15 +74,6 @@ getRegister model registerName =
 
         _ ->
             model.registerM
-
-
-roundTo : Int -> Float -> Float
-roundTo d x =
-    let
-        factor =
-            10.0 ^ toFloat d
-    in
-    x * factor |> round |> (\u -> toFloat u / factor)
 
 
 getRegisterAsString : Model -> String -> String
@@ -121,6 +133,15 @@ displayRegister model argList _ =
                 reg_
     in
     model |> displayRegisterContents (String.toUpper reg) (getRegisterAsString model reg)
+
+
+displayRegisterContents : String -> String -> Model -> ( Model, Cmd Msg )
+displayRegisterContents registerName registerContents model =
+    model |> withCmd (put <| String.toUpper registerName ++ ": " ++ registerContents)
+
+
+
+-- EVALUATE FUNCTIONS AND OPERATIONS
 
 
 f1 : Model -> (Float -> Float) -> ArgList -> ( Model, Cmd Msg )
@@ -213,19 +234,8 @@ op2 model op_ argList =
             setRegister "m" (Just sum) model |> withCmd (put sumAsString)
 
 
-echo : Model -> ArgList -> String -> ( Model, Cmd Msg )
-echo model _ input =
-    model |> withCmd (put ("echo: " ++ input))
 
-
-message : Model -> String -> ( Model, Cmd Msg )
-message model input =
-    model |> withCmd (put input)
-
-
-help : Model -> ( Model, Cmd Msg )
-help model =
-    model |> withCmd (put helpText)
+-- REGISTER OPERATIONS
 
 
 sto : Model -> ArgList -> String -> ( Model, Cmd Msg )
@@ -256,9 +266,27 @@ rcl model argList _ =
             setRegister "m" (Just registerContents) model |> withCmd (put message_)
 
 
-displayRegisterContents : String -> String -> Model -> ( Model, Cmd Msg )
-displayRegisterContents registerName registerContents model =
-    model |> withCmd (put <| String.toUpper registerName ++ ": " ++ registerContents)
+
+-- HELPERS
+
+
+message : Model -> String -> ( Model, Cmd Msg )
+message model input =
+    model |> withCmd (put input)
+
+
+
+-- OTHER COMMANDS
+
+
+echo : Model -> ArgList -> String -> ( Model, Cmd Msg )
+echo model _ input =
+    model |> withCmd (put ("echo: " ++ input))
+
+
+help : Model -> ( Model, Cmd Msg )
+help model =
+    model |> withCmd (put helpText)
 
 
 helpText =

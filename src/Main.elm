@@ -1,27 +1,7 @@
-module CLI exposing (main)
+module Main exposing (main)
 
-{-| A simple Platform.worker program with
-a simple command-line interface:
-
-`$ sh make.sh` -- (1)
-`$ chmod u+x cli; alias cli='./cli'` -- (2)
-`$ cli 77` -- (3)
-`232`
-
-1.  Compile Main.elm to `./run/main.js` and
-    copy `src/cli.js` to `./run/cli.js`
-
-2.  Make `cli` executable and make an alias for it
-    to avoid awkward typing.
-
-3.  Try it out. The program `cli.js` communicates
-    with runtime for the `Platform.worker` program.
-    The worker accepts input, computes some output,
-    and send the output back through ports.
-
-To do something more interesting, replace
-the `transform` function in `Main.elm`.
-
+{-| A simple Platform.worker program which
+provides a command-line intepreter:
 -}
 
 import ArgList exposing (ArgList)

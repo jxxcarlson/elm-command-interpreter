@@ -3,7 +3,7 @@ const repl = require('repl');
 
 // Link to Elm code
 var Elm = require('./main').Elm;
-var main = Elm.CLI.init();
+var main = Elm.Main.init();
 
 // Eval function for the repl
 function eval(cmd, _, _,  callback) {
