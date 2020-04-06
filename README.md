@@ -32,7 +32,8 @@ $ npm run build
 Then 
 
 ```
-$ npm run
+$ npm start
+$ npm start
 > add 2 3
 5
 ... etc ...
