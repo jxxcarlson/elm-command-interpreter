@@ -1,4 +1,13 @@
-## Command Line Interereter
+## Command Line Interpreter
+
+**Contents**
+
+1. Introduction
+2. Installation and operation
+3. A Calculator
+4. Structure
+
+## 1. Introduction
 
 This project is a demo in the form of a calculator 
 of how one can use Elm to write a command-line interpreter.
@@ -6,11 +15,13 @@ It has a modular structure that can easily be adapted
 to other, more interesting purposes.  See the section
 **Structure** below.
 
-The project consists of an `Platform.Worker` Elm program which
-communicates with the outside world via ports and a 17-line
-Javascript program, `cli.js`
+The project consists of a `Platform.Worker` Elm program which
+communicates via ports with a 17-line
+Javascript program, `cli.js`.  The Javascript program
+uses the Node `repl` package to provide a convenient user
+interface.
 
-## Installation and operation
+## 2. Installation and operation
 
 First do
 
@@ -25,10 +36,11 @@ $ npm run
 > add 2 3
 5
 ... etc ...
-> h -- provides helpNo I wasn't actually cause I'm preoccupied with something
+> h -- provides help
 ```
 
-The executable files `cli.js` and `main.js` in `./ex`.  
+The executable files `cli.js` and `main.js` are built
+and placed in `./ex`.  
 If you want to run the code without the intermediary 
 of `npm`, say
 
@@ -37,7 +49,9 @@ $ node ex/cli.js
 ```
 
 
-## Description
+## 3.  The Calculator
+
+The program's help screen says all that is needed:
 
 ```
 Simple command line program: calculator
@@ -69,10 +83,15 @@ Command summary
 ---------------------------------------------------------------------------------------
 ```
 
-## Structure
+## 4. Structure
+
+The project consists of five files, briefly described below.
+To bend the project to other uses, one must change
+the function `Main.executedCommand` and the code it references
+in module `Command`.
 
 
-### Main
+### 4.1. Main
 
 The heart of the program is `executeCommand`.  It is
 easy to configure with the actual commands defined in module
@@ -102,21 +121,22 @@ executeCommand model cmd args input =
         ... 
 ```
 
-### Command 
+### 4.2 Command 
 
-This is the module that communicates with `cli.js` via ports.
+This is the module that (a) implements
+the commands and (b) communicates with `cli.js` via ports.
 
 
-### ArgList
+### 4.3 ArgList
 
 Functions for extracting arguments.
 
-### Model
+### 4.4 Model
 
 Very simple.  Just some named registers of type `Maybe Float`
 
-### cli.js
+### 4.5 cli.js
 
-The Javascript program that provides an interactive repl
-and which talks to the Elm program.
+The Javascript program that talks to the Elm program
+and to the user via  an interactive repl.
 
