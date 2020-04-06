@@ -94,8 +94,8 @@ in module `Command`.
 ### 4.1. Main
 
 The heart of the program is `executeCommand`.  It is
-easy to configure.  The code which executes
- the commands is houded in module
+easy to configure.  The code which carries out
+ the commands is housed in module
 `Commmand`.
 
 ```elm
