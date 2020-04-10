@@ -71,6 +71,9 @@ executeCommand model cmd args input =
         "ln" ->
             Command.f1 model (logBase e) args
 
+        "neg" ->
+            Command.f1 model (\x -> -x) args
+
         "pow" ->
             Command.f2 model (\a b -> a ^ b) args
 
@@ -80,8 +83,29 @@ executeCommand model cmd args input =
         "echo" ->
             Command.echo model args input
 
-        "r" ->
-            Command.displayRegister model args input
+        "a" ->
+            Command.displayRegister model "a"
+
+        "b" ->
+            Command.displayRegister model "b"
+
+        "c" ->
+            Command.displayRegister model "c"
+
+        "d" ->
+            Command.displayRegister model "d"
+
+        "e" ->
+            Command.displayRegister model "e"
+
+        "f" ->
+            Command.displayRegister model "f"
+
+        "m" ->
+            Command.displayRegister model "m"
+
+        "recip" ->
+            Command.f1 model (\x -> 1 / x) args
 
         "h" ->
             Command.help model

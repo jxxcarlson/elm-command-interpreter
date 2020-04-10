@@ -119,19 +119,8 @@ setRegister registerName registerContents model =
             model
 
 
-displayRegister : Model -> ArgList -> String -> ( Model, Cmd Msg )
-displayRegister model argList _ =
-    let
-        reg_ =
-            ArgList.get 0 argList
-
-        reg =
-            if reg_ == "_none_" then
-                "m"
-
-            else
-                reg_
-    in
+displayRegister : Model -> String -> ( Model, Cmd Msg )
+displayRegister model reg =
     model |> displayRegisterContents (String.toUpper reg) (getRegisterAsString model reg)
 
 
@@ -240,14 +229,30 @@ op2 model op_ argList =
 
 sto : Model -> ArgList -> String -> ( Model, Cmd Msg )
 sto model argList _ =
-    let
-        reg =
-            ArgList.get 0 argList
+    case ArgList.length argList of
+        1 ->
+            sto1 model (ArgList.get 0 argList)
 
-        message_ =
-            "M > " ++ String.toUpper reg
-    in
-    setRegister reg model.registerM model |> withCmd (put message_)
+        2 ->
+            sto2 model (ArgList.get 0 argList) (ArgList.get 1 argList)
+
+        _ ->
+            model |> withCmd (put "sto requires 1 or 2 arguments")
+
+
+sto2 : Model -> String -> String -> ( Model, Cmd Msg )
+sto2 model val reg =
+    case String.toFloat val of
+        Nothing ->
+            model |> withCmd (put "argument is not a number")
+
+        Just x ->
+            setRegister reg (Just x) model |> withCmd (put <| val ++ " > " ++ reg)
+
+
+sto1 : Model -> String -> ( Model, Cmd Msg )
+sto1 model reg =
+    setRegister reg model.registerM model |> withCmd (put <| "M > " ++ reg)
 
 
 rcl model argList _ =
@@ -304,18 +309,29 @@ display the contents of register a, etc.
 
 Command summary
 ---------------------------------------------------------------------------------------
-> add a b         -- compute a + b, store result in register M
-> mul a b         -- compute a * b, result to register M
-> sub a b         -- compute a - b, result to register M
-> div a b         -- compute a / b, result to register M
-> exp x           -- exponential of x
-> ln x            -- natural logarithm of x
-> pow a x         -- a^x
-> log a x         -- logarithm of x to base a
-> d               -- display contents of register M
-> d a             -- display contents of register A
+Arithmetic
+----------
+> add 2 3.1       -- compute 2 + 3.1, store result in register M
+> mul 2 3.1       -- compute 2 * 3.1, result to register M
+> sub 2 3.1       -- compute 2 - 3.1, result to register M
+> div 2 3.1       -- compute 2 / 3.1, result to register M
+> neg 3.1         -- -3.1
+> recip 3.1       -- 1/3.1
+---------------------------------------------------------------------------------------
+Functions
+---------
+> exp 2           -- exponential of 2
+> ln 2            -- natural logarithm of 2
+> log 2 16        -- base 2 logarithm of 16
+> pow 2 16        -- 2^16
+---------------------------------------------------------------------------------------
+Registers
+---------
+> a               -- display contents of register A
+                  -- likewise for registers B, C, D, E, F, M
 > rcl a           -- store contents of A in M
 > sto a           -- store contents of M in A
+> sto 2.1 e       -- store 2.1 in register E
 > h               -- show help
 ---------------------------------------------------------------------------------------
 """

@@ -17,7 +17,6 @@ function eval(cmd, _, _,  callback) {
 }
 
 function myWriter(output) {
-  // You can also transform the output: // return output.toUpperCase();
   return output
 }
 
