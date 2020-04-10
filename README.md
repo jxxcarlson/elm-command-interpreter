@@ -21,6 +21,19 @@ Javascript program, `cli.js`.  The Javascript program
 uses the Node `repl` package to provide a convenient user
 interface.
 
+### Addendum
+
+There are two tags in the repo for this project 
+
+- register_version
+- stack_version
+
+The first is the original version, as described below.
+The second is a stack-based calculator, operating on the 
+principles of the old HP RPN calculators.  It uses
+the same architecture as does `register_version`, but
+makes use of an additional `Stack` module.
+
 ## 2. Installation and operation
 
 First do
