@@ -1,6 +1,7 @@
-module ArgList exposing (ArgList, get, getAsFloat, init, length)
+module ArgList exposing (ArgList, get, getAsFloat, getFloatList, init, length)
 
 import List.Extra
+import Maybe.Extra
 
 
 
@@ -27,6 +28,13 @@ get k (ArgList data) =
 getAsFloat : Int -> ArgList -> Maybe Float
 getAsFloat k argList =
     get k argList |> String.toFloat
+
+
+getFloatList : ArgList -> List Float
+getFloatList (ArgList data) =
+    data.args
+        |> List.map String.toFloat
+        |> Maybe.Extra.values
 
 
 length : ArgList -> Int

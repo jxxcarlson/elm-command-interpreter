@@ -35,6 +35,9 @@ principles of the old HP RPN calculators.  It uses
 the same architecture as does `register_version`, but
 makes use of an additional `Stack` module.
 
+I welcome comments at this early stage, especially
+on the stack version: Elm Slack, jxxcarlson.
+
 ## 2. Installation and operation
 
 First do

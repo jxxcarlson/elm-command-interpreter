@@ -53,11 +53,26 @@ commandProcessor model input =
 executeCommand : Model -> String -> ArgList -> String -> ( Model, Cmd Msg )
 executeCommand model cmd args input =
     case cmd of
-        "clear" ->
+        "av" ->
+            Command.average model
+
+        "c" ->
             Command.clear model
 
         "pop" ->
             Command.pop model
+
+        "sto" ->
+            Command.sto model
+
+        "list" ->
+            Command.list model args
+
+        "rcl" ->
+            Command.rcl model
+
+        "mc" ->
+            Command.memclear model
 
         "add" ->
             Command.f2 model (+) args
@@ -100,6 +115,12 @@ executeCommand model cmd args input =
 
         "s" ->
             Command.showStack model
+
+        "m" ->
+            Command.showMem model
+
+        "sum" ->
+            Command.sum model
 
         _ ->
             case List.member (String.left 1 cmd) numerals of

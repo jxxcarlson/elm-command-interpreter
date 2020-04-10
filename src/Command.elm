@@ -1,23 +1,31 @@
 port module Command exposing
-    ( clear
+    ( average
+    , clear
     , f1
     , f2
     , get
     , handleNumber
     , help
+    , list
+    , memclear
     , pop
     , put
+    , rcl
     , rot
+    , showMem
     , showMessage
     , showStack
     , showStackTop
+    , sto
+    , sum
     , swap
     )
 
 import ArgList exposing (ArgList)
 import Cmd.Extra exposing (withCmd, withNoCmd)
+import FloatStack exposing (..)
 import Model exposing (Model, Msg(..))
-import Stack exposing (Stack)
+import Stack exposing (BoundedInt(..), Stack)
 
 
 
@@ -51,9 +59,29 @@ roundTo d x =
 -- FUNCTIONS TO MANAGE THE STACK
 
 
+list : Model -> ArgList -> ( Model, Cmd Msg )
+list model argList =
+    showMessage { model | stack = Stack.pushList (ArgList.getFloatList argList) model.stack } "list pushed onto stack"
+
+
 clear : Model -> ( Model, Cmd Msg )
 clear model =
     showMessage { model | stack = Stack.empty } "Stack empty"
+
+
+sto : Model -> ( Model, Cmd Msg )
+sto model =
+    showMessage { model | memory = model.stack } "stack > memory"
+
+
+rcl : Model -> ( Model, Cmd Msg )
+rcl model =
+    showMessage { model | stack = Stack.pushStack model.memory model.stack } "stack = memory ++ stack"
+
+
+memclear : Model -> ( Model, Cmd Msg )
+memclear model =
+    showMessage { model | memory = Stack.empty } "memory clear"
 
 
 pop : Model -> ( Model, Cmd Msg )
@@ -95,6 +123,16 @@ showStack model =
 
         False ->
             model |> withCmd (put <| "stack: " ++ Stack.show (String.fromFloat << roundTo precision) model.stack)
+
+
+showMem : Model -> ( Model, Cmd Msg )
+showMem model =
+    case Stack.isEmpty model.stack of
+        True ->
+            showMessage model "memory is empty"
+
+        False ->
+            model |> withCmd (put <| "memory: " ++ Stack.show (String.fromFloat << roundTo precision) model.memory)
 
 
 showStackTop : Model -> ( Model, Cmd Msg )
@@ -245,6 +283,24 @@ f22 model op_ argList =
             { model | stack = newStack } |> showStackTop
 
 
+average : Model -> ( Model, Cmd Msg )
+average model =
+    let
+        ( _, st ) =
+            FloatStack.average model.stack
+    in
+    { model | stack = st } |> showStackTop
+
+
+sum : Model -> ( Model, Cmd Msg )
+sum model =
+    let
+        ( _, st ) =
+            FloatStack.sum model.stack
+    in
+    { model | stack = st } |> showStackTop
+
+
 swap : Model -> ( Model, Cmd Msg )
 swap model =
     { model | stack = Stack.swap model.stack } |> showStack
@@ -262,7 +318,7 @@ help model =
 
 helpText =
     """---------------------------------------------------------------------------------------
-Simple command line program: stack-based calculator
+Simple command line program: stack-based calculator (Work in progress)
 ---------------------------------------------------------------------------------------
 Arithmetic
 ----------
@@ -280,6 +336,14 @@ Stack
 > pop             -- pop an element off the stack
 > swap            -- swap the top two elements of the stack
 > rot             -- rotate stack
+> sum             -- sum of values on stack
+> av              -- average of values on stack
+> sto             -- copy the stack to memory
+> rcl             -- push the contents of the memory onto the stack
+> c               -- clear stack
+> mc              -- clear memory
+> m               -- show memory
+> list 1 2 3      -- push 1, 2, 3 onto stack
 ---------------------------------------------------------------------------------------
 Functions
 ---------

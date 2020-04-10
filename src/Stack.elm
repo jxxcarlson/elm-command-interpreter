@@ -1,10 +1,33 @@
-module Stack exposing (Stack(..), empty, init, isEmpty, pop, pop2, push, rot, show, swap, top)
+module Stack exposing
+    ( BoundedInt(..)
+    , Stack
+    , depth
+    , dup
+    , empty
+    , init
+    , isEmpty
+    , pop
+    , pop2
+    , push
+    , pushList
+    , pushStack
+    , rot
+    , show
+    , swap
+    , take
+    , top
+    )
 
 import List.Extra
 
 
 type Stack a
     = Stack (List a)
+
+
+type BoundedInt
+    = All
+    | Bounded Int
 
 
 init : List a -> Stack a
@@ -22,14 +45,38 @@ isEmpty (Stack data) =
     data == []
 
 
-length : Stack a -> Int
-length (Stack data) =
+depth : Stack a -> Int
+depth (Stack data) =
     List.length data
+
+
+dup : Stack a -> Stack a
+dup (Stack data) =
+    Stack (data ++ data)
 
 
 top : Stack a -> Maybe a
 top (Stack data) =
     List.head data
+
+
+{-|
+
+    > Stack.take (Bounded 2) s
+    ([1,2],Stack [3,4])
+
+    > Stack.take All s
+    ([1,2,3,4],Stack [])
+
+-}
+take : BoundedInt -> Stack a -> ( List a, Stack a )
+take n (Stack data) =
+    case n of
+        All ->
+            ( data, Stack [] )
+
+        Bounded k ->
+            ( List.take k data, Stack (List.drop k data) )
 
 
 swap : Stack a -> Stack a
@@ -82,6 +129,16 @@ pop2 (Stack data) =
 push : a -> Stack a -> Stack a
 push x (Stack data) =
     Stack (x :: data)
+
+
+pushStack : Stack a -> Stack a -> Stack a
+pushStack (Stack data1) (Stack data2) =
+    Stack (data1 ++ data2)
+
+
+pushList : List a -> Stack a -> Stack a
+pushList list (Stack data) =
+    Stack (list ++ data)
 
 
 show : (a -> String) -> Stack a -> String
