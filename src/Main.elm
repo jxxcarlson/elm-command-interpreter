@@ -117,7 +117,16 @@ executeCommand model cmd args input =
             Command.sto model args input
 
         _ ->
-            Command.message model "I don't understand"
+            case List.member (String.left 1 cmd) numerals of
+                True ->
+                    Command.handleNumber model cmd
+
+                False ->
+                    Command.message model "I don't understand"
+
+
+numerals =
+    String.split "" "0123456789"
 
 
 subscriptions : Model -> Sub Msg

@@ -1,4 +1,4 @@
-module Stack exposing (Stack(..), empty, init, pop, push, show)
+module Stack exposing (Stack(..), empty, init, pop, pop2, push, show)
 
 
 type Stack a
@@ -18,6 +18,21 @@ empty =
 pop : Stack a -> ( Maybe a, Stack a )
 pop (Stack data) =
     ( List.head data, Stack (List.drop 1 data) )
+
+
+pop2 : Stack a -> ( Maybe a, Maybe a, Stack a )
+pop2 (Stack data) =
+    let
+        first =
+            List.head data
+
+        second =
+            List.head (List.drop 1 data)
+
+        newData =
+            List.drop 2 data
+    in
+    ( first, second, Stack newData )
 
 
 push : a -> Stack a -> Stack a
