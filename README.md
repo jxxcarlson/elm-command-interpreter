@@ -23,7 +23,8 @@ interface.
 
 ### Addendum
 
-There are two branches of interest in this project 
+There are two branches of interest in this project besides 
+`master`.
 
 - original
 - stack
