@@ -1,5 +1,7 @@
 module Model exposing (Flags, Model, Msg(..), initModel)
 
+import Stack exposing (Stack)
+
 
 type alias Model =
     { registerA : Maybe Float
@@ -9,6 +11,7 @@ type alias Model =
     , registerE : Maybe Float
     , registerF : Maybe Float
     , registerM : Maybe Float
+    , stack : Stack Float
     }
 
 
@@ -25,6 +28,7 @@ initModel _ =
     , registerE = Nothing
     , registerF = Nothing
     , registerM = Nothing
+    , stack = Stack.empty
     }
 
 

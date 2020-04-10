@@ -53,17 +53,23 @@ commandProcessor model input =
 executeCommand : Model -> String -> ArgList -> String -> ( Model, Cmd Msg )
 executeCommand model cmd args input =
     case cmd of
+        "clear" ->
+            Command.clear model
+
+        "pop" ->
+            Command.pop model
+
         "add" ->
-            Command.op model (+) args
+            Command.f2 model (+) args
 
         "mul" ->
-            Command.op model (*) args
+            Command.f2 model (*) args
 
         "sub" ->
-            Command.op model (-) args
+            Command.f2 model (-) args
 
         "div" ->
-            Command.op model (/) args
+            Command.f2 model (/) args
 
         "exp" ->
             Command.f1 model (\x -> e ^ x) args
@@ -80,44 +86,37 @@ executeCommand model cmd args input =
         "log" ->
             Command.f2 model logBase args
 
-        "echo" ->
-            Command.echo model args input
-
-        "a" ->
-            Command.displayRegister model "a"
-
-        "b" ->
-            Command.displayRegister model "b"
-
-        "c" ->
-            Command.displayRegister model "c"
-
-        "d" ->
-            Command.displayRegister model "d"
-
-        "e" ->
-            Command.displayRegister model "e"
-
-        "f" ->
-            Command.displayRegister model "f"
-
-        "m" ->
-            Command.displayRegister model "m"
-
         "recip" ->
             Command.f1 model (\x -> 1 / x) args
+
+        "rot" ->
+            Command.rot model
+
+        "swap" ->
+            Command.swap model
 
         "h" ->
             Command.help model
 
-        "rcl" ->
-            Command.rcl model args input
-
-        "sto" ->
-            Command.sto model args input
+        "s" ->
+            Command.showStack model
 
         _ ->
-            Command.message model "I don't understand"
+            case List.member (String.left 1 cmd) numerals of
+                True ->
+                    Command.handleNumber model cmd
+
+                False ->
+                    case cmd == "" of
+                        True ->
+                            Command.showMessage model "stack is empty"
+
+                        False ->
+                            Command.showMessage model "I don't understand"
+
+
+numerals =
+    String.split "" "0123456789"
 
 
 subscriptions : Model -> Sub Msg
