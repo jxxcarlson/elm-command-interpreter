@@ -23,10 +23,10 @@ interface.
 
 ### Addendum
 
-There are two tags in the repo for this project 
+There are two branches of interest in this project 
 
-- register_version
-- stack_version
+- original
+- stack
 
 The first is the original version, as described below.
 The second is a stack-based calculator, operating on the 
