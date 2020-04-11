@@ -65,8 +65,8 @@ executeCommand model cmd args input =
         "sto" ->
             Command.sto model
 
-        "list" ->
-            Command.list model args
+        "push" ->
+            Command.push model args
 
         "rcl" ->
             Command.rcl model
@@ -85,6 +85,12 @@ executeCommand model cmd args input =
 
         "div" ->
             Command.f2 model (/) args
+
+        "\\div" ->
+            Command.f2 model (\x y -> y / x) args
+
+        "\\sub" ->
+            Command.f2 model (\x y -> y - x) args
 
         "exp" ->
             Command.f1 model (\x -> e ^ x) args

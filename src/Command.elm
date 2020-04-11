@@ -6,9 +6,9 @@ port module Command exposing
     , get
     , handleNumber
     , help
-    , list
     , memclear
     , pop
+    , push
     , put
     , rcl
     , rot
@@ -59,8 +59,8 @@ roundTo d x =
 -- FUNCTIONS TO MANAGE THE STACK
 
 
-list : Model -> ArgList -> ( Model, Cmd Msg )
-list model argList =
+push : Model -> ArgList -> ( Model, Cmd Msg )
+push model argList =
     showMessage { model | stack = Stack.pushList (ArgList.getFloatList argList) model.stack } "list pushed onto stack"
 
 
@@ -329,6 +329,9 @@ Unary operations are neg and recip
 > add 2           -- add 2 to the top of stack
 > add 3 5         -- add 3 and 5, put result on top of the stack
 > add             -- add the top two numbers on the stack
+
+There are also commands \\sub and \\div, where \\sub x y == sub y x, etc.
+Useful for subtracting something from the top of the stack, etc.
 ---------------------------------------------------------------------------------------
 Stack
 -----
@@ -343,7 +346,7 @@ Stack
 > c               -- clear stack
 > mc              -- clear memory
 > m               -- show memory
-> list 1 2 3      -- push 1, 2, 3 onto stack
+> push 1 2 3      -- push 1, 2, 3 onto stack
 ---------------------------------------------------------------------------------------
 Functions
 ---------

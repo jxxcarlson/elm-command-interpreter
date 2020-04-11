@@ -159,3 +159,7 @@ Very simple.  Just some named registers of type `Maybe Float`
 The Javascript program that talks to the Elm program
 and to the user via  an interactive repl.
 
+### Note to self
+
+This code is at `~/dev/elm/projects/cli`
+
